@@ -1,0 +1,17 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: Bogdanp/setup-racket@v1.8.1
+        with:
+          architecture: 'x64'
+          distribution: 'full'
+          variant: 'CS'
+          version: 'stable'
+      - run: raco pkg install --auto --batch
+      - run: raco test -p bincraft
