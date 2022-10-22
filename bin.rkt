@@ -26,6 +26,7 @@
     [(string? dat) (string->bytes dat)]
     [(list? dat) (map x dat)]
     [(and (number? dat) (<= 0 dat 255)) (byte dat)]
+    [(number? dat) (big-number->bytes dat)]
     [(equal? #f dat) '()]
     [else (raise-arguments-error
            'x
@@ -36,6 +37,14 @@
 
 (define (number->byte n)
   (byte n))
+
+(define (big-number->bytes dat)
+  (define (aux dat)
+    (if (< dat 256)
+        (list (byte dat))
+        (cons (byte (modulo dat 256))
+              (aux (quotient dat 256)))))
+  (reverse (aux dat)))
 
 (define (hexstr->bytes h)
   (map (λ (b) (number->byte
