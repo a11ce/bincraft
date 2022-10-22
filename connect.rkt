@@ -14,8 +14,11 @@
   (define-values (in out) (tcp-connect host port))
   (connection in out))
 
-(define (recv-line conn)
-  (read-line (connection-in conn)))
+(define (recv-line conn [multi #f])
+  (if multi
+      (for/list ([_ (in-range multi)])
+        (read-line (connection-in conn)))
+      (read-line (connection-in conn))))
 
 (define (sendln conn dat)
   (send conn (string-append dat "\n"))
